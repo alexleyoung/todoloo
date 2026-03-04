@@ -10,6 +10,8 @@ func NewParser(cfg config.LLMConfig) (Parser, error) {
 	switch cfg.Provider {
 	case "ollama":
 		return NewOllamaParser(cfg), nil
+	case "openrouter":
+		return NewOpenRouterParser(cfg), nil
 	default:
 		return nil, fmt.Errorf("unknown LLM provider: %s", cfg.Provider)
 	}

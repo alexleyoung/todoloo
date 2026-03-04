@@ -54,12 +54,14 @@ func Load() (*Config, error) {
 	}
 
 	configDir := filepath.Join(home, ".todoloo")
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(configDir)
-	viper.AddConfigPath(".")
+	return LoadPath(configDir + "/config.yaml")
+}
 
-	err = viper.ReadInConfig()
+func LoadPath(path string) (*Config, error) {
+	viper.SetConfigFile(path)
+	viper.SetConfigType("yaml")
+
+	err := viper.ReadInConfig()
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config: %w", err)
 	}

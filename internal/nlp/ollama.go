@@ -88,7 +88,7 @@ func (p *OllamaParser) Parse(ctx context.Context, raw string, meta ParserMeta) (
 }
 
 func (p *OllamaParser) parseResponse(ctx context.Context, response string, meta ParserMeta) (*models.ParsedTodo, error) {
-	jsonStr := extractJSON(response)
+	jsonStr := ExtractJSON(response)
 	if jsonStr == "" {
 		return nil, fmt.Errorf("no JSON found in response")
 	}
@@ -147,7 +147,7 @@ Respond with ONLY a JSON object like: {"date": "2026-03-15", "time": "14:30"}`, 
 		Date string `json:"date"`
 		Time string `json:"time"`
 	}
-	if err := json.Unmarshal([]byte(extractJSON(ollamaResp.Response)), &dateResult); err != nil {
+	if err := json.Unmarshal([]byte(ExtractJSON(ollamaResp.Response)), &dateResult); err != nil {
 		return time.Time{}, err
 	}
 
@@ -193,16 +193,4 @@ Schema:
 Do NOT resolve dates to ISO format — extract the expression exactly as written.
 
 Input: "%s"`, meta.Today.Format("2006-01-02"), meta.Today.Weekday(), categories, raw)
-}
-
-func extractJSON(text string) string {
-	start := strings.Index(text, "{")
-	if start == -1 {
-		return ""
-	}
-	end := strings.LastIndex(text, "}")
-	if end == -1 {
-		return ""
-	}
-	return text[start : end+1]
 }
