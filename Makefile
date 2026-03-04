@@ -1,11 +1,22 @@
-.PHONY: build run test lint clean
+.PHONY: build run start stop test lint clean install
 
 build:
 	go build -ldflags="-s -w" -o bin/todoloo ./cmd/server
 	go build -ldflags="-s -w" -o bin/tdl ./cmd/tdl
 
+install: build
+	install -d $(HOME)/bin
+	install bin/todoloo $(HOME)/bin/
+	install bin/tdl $(HOME)/bin/
+
+start:
+	./bin/todoloo start &
+
+stop:
+	./bin/todoloo stop
+
 run:
-	go run ./cmd/server
+	go run ./cmd/server run
 
 test:
 	go test ./... -race -count=1
