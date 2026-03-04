@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -16,7 +17,19 @@ type DB struct {
 	*sql.DB
 }
 
+func expandPath(path string) string {
+	if strings.HasPrefix(path, "~/") {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return path
+		}
+		return filepath.Join(home, path[2:])
+	}
+	return path
+}
+
 func Open(path string) (*DB, error) {
+	path = expandPath(path)
 	if path == ":memory:" {
 		db, err := sql.Open("sqlite", path)
 		if err != nil {

@@ -222,7 +222,7 @@ func (d *DB) QueryTodos(ctx context.Context, filters models.TodoFilters) ([]mode
 	}
 	defer rows.Close()
 
-	var todos []models.Todo
+	todos := []models.Todo{}
 	for rows.Next() {
 		var todo models.Todo
 		var processedAt sql.NullTime
