@@ -9,11 +9,12 @@ import (
 )
 
 type Config struct {
-	LLM      LLMConfig      `mapstructure:"llm"`
-	Database DatabaseConfig `mapstructure:"database"`
-	Queue    QueueConfig    `mapstructure:"queue"`
-	Server   ServerConfig   `mapstructure:"server"`
-	Log      LogConfig      `mapstructure:"log"`
+	LLM        LLMConfig      `mapstructure:"llm"`
+	Database   DatabaseConfig `mapstructure:"database"`
+	Queue      QueueConfig    `mapstructure:"queue"`
+	Server     ServerConfig   `mapstructure:"server"`
+	Log        LogConfig      `mapstructure:"log"`
+	Categories []string       `mapstructure:"categories"`
 }
 
 type LLMConfig struct {
@@ -30,9 +31,10 @@ type DatabaseConfig struct {
 }
 
 type QueueConfig struct {
-	PollIntervalSeconds int     `mapstructure:"poll_interval_seconds"`
-	MaxRetries          int     `mapstructure:"max_retries"`
-	BackoffMultiplier   float64 `mapstructure:"backoff_multiplier"`
+	Categories          []string `mapstructure:"categories"`
+	PollIntervalSeconds int      `mapstructure:"poll_interval_seconds"`
+	MaxRetries          int      `mapstructure:"max_retries"`
+	BackoffMultiplier   float64  `mapstructure:"backoff_multiplier"`
 }
 
 type ServerConfig struct {
