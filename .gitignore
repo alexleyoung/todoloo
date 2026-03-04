@@ -1,3 +1,4 @@
 # binaries
-server
-tdl
+bin/
+
+config.yaml
