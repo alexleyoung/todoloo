@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -88,7 +89,7 @@ func (h *TodoHandler) GetTodos(w http.ResponseWriter, r *http.Request) {
 
 	todos, err := h.db.QueryTodos(r.Context(), filters)
 	if err != nil {
-		http.Error(w, "Failed to query todos", http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Failed to query todos: %v", err), http.StatusInternalServerError)
 		return
 	}
 

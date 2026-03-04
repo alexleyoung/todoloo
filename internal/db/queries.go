@@ -124,6 +124,15 @@ func (d *DB) InsertTodo(ctx context.Context, parsed *models.ParsedTodo, rawID in
 
 func (d *DB) GetTodoByID(ctx context.Context, id int64) (*models.Todo, error) {
 	var todo models.Todo
+	var rawID sql.NullInt64
+	var description sql.NullString
+	var category sql.NullString
+	var dueDate sql.NullString
+	var dueTime sql.NullString
+	var tags sql.NullString
+	var location sql.NullString
+	var recurrence sql.NullString
+	var sourceText sql.NullString
 	var processedAt sql.NullTime
 	var completedAt sql.NullTime
 
@@ -133,9 +142,9 @@ func (d *DB) GetTodoByID(ctx context.Context, id int64) (*models.Todo, error) {
 			   created_at, processed_at, completed_at
 		FROM todos WHERE id = ?
 	`, id).Scan(
-		&todo.ID, &todo.RawID, &todo.Title, &todo.Description, &todo.Category,
-		&todo.DueDate, &todo.DueTime, &todo.Urgency, &todo.Tags, &todo.Location,
-		&todo.Recurrence, &todo.Status, &todo.SourceText, &todo.CreatedAt,
+		&todo.ID, &rawID, &todo.Title, &description, &category,
+		&dueDate, &dueTime, &todo.Urgency, &tags, &location,
+		&recurrence, &todo.Status, &sourceText, &todo.CreatedAt,
 		&processedAt, &completedAt,
 	)
 	if err == sql.ErrNoRows {
@@ -143,6 +152,33 @@ func (d *DB) GetTodoByID(ctx context.Context, id int64) (*models.Todo, error) {
 	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get todo: %w", err)
+	}
+	if rawID.Valid {
+		todo.RawID = rawID.Int64
+	}
+	if description.Valid {
+		todo.Description = description.String
+	}
+	if category.Valid {
+		todo.Category = category.String
+	}
+	if dueDate.Valid {
+		todo.DueDate = dueDate.String
+	}
+	if dueTime.Valid {
+		todo.DueTime = dueTime.String
+	}
+	if tags.Valid {
+		todo.Tags = tags.String
+	}
+	if location.Valid {
+		todo.Location = location.String
+	}
+	if recurrence.Valid {
+		todo.Recurrence = recurrence.String
+	}
+	if sourceText.Valid {
+		todo.SourceText = sourceText.String
 	}
 	if processedAt.Valid {
 		todo.ProcessedAt = &processedAt.Time
@@ -225,16 +261,52 @@ func (d *DB) QueryTodos(ctx context.Context, filters models.TodoFilters) ([]mode
 	todos := []models.Todo{}
 	for rows.Next() {
 		var todo models.Todo
+		var rawID sql.NullInt64
+		var description sql.NullString
+		var category sql.NullString
+		var dueDate sql.NullString
+		var dueTime sql.NullString
+		var tags sql.NullString
+		var location sql.NullString
+		var recurrence sql.NullString
+		var sourceText sql.NullString
 		var processedAt sql.NullTime
 		var completedAt sql.NullTime
 		err := rows.Scan(
-			&todo.ID, &todo.RawID, &todo.Title, &todo.Description, &todo.Category,
-			&todo.DueDate, &todo.DueTime, &todo.Urgency, &todo.Tags, &todo.Location,
-			&todo.Recurrence, &todo.Status, &todo.SourceText, &todo.CreatedAt,
+			&todo.ID, &rawID, &todo.Title, &description, &category,
+			&dueDate, &dueTime, &todo.Urgency, &tags, &location,
+			&recurrence, &todo.Status, &sourceText, &todo.CreatedAt,
 			&processedAt, &completedAt,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan todo: %w", err)
+		}
+		if rawID.Valid {
+			todo.RawID = rawID.Int64
+		}
+		if description.Valid {
+			todo.Description = description.String
+		}
+		if category.Valid {
+			todo.Category = category.String
+		}
+		if dueDate.Valid {
+			todo.DueDate = dueDate.String
+		}
+		if dueTime.Valid {
+			todo.DueTime = dueTime.String
+		}
+		if tags.Valid {
+			todo.Tags = tags.String
+		}
+		if location.Valid {
+			todo.Location = location.String
+		}
+		if recurrence.Valid {
+			todo.Recurrence = recurrence.String
+		}
+		if sourceText.Valid {
+			todo.SourceText = sourceText.String
 		}
 		if processedAt.Valid {
 			todo.ProcessedAt = &processedAt.Time
